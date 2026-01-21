@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  speech_api:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "8000"
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    build: ./nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - speech_api
